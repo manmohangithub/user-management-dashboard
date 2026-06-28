@@ -33,17 +33,119 @@ export const splitFullName = (fullName = "") => {
 
 /**
  * Uses company.name as the department.
- * Falls back to DEFAULT_DEPARTMENT.
  */
-export const generateDepartment = (company = {}) => {
-  return company?.name?.trim() || DEFAULT_DEPARTMENT;
+export const generateDepartment = (
+  company = {}
+) => {
+  return (
+    company?.name?.trim() ||
+    DEFAULT_DEPARTMENT
+  );
 };
 
-/**
- * Maps JSONPlaceholder user
- * to dashboard user model.
- */
-export const mapApiUserToUser = (user) => {
+/*
+|--------------------------------------------------------------------------
+| Indian Employee Data
+|--------------------------------------------------------------------------
+*/
+
+const INDIAN_EMPLOYEES = {
+  1: {
+    firstName: "Rahul",
+    lastName: "Sharma",
+    email: "rahul.sharma@techsolutions.in",
+    department: "Engineering",
+  },
+
+  2: {
+    firstName: "Priya",
+    lastName: "Reddy",
+    email: "priya.reddy@techsolutions.in",
+    department: "Human Resources",
+  },
+
+  3: {
+    firstName: "Arjun",
+    lastName: "Verma",
+    email: "arjun.verma@techsolutions.in",
+    department: "Finance",
+  },
+
+  4: {
+    firstName: "Sneha",
+    lastName: "Iyer",
+    email: "sneha.iyer@techsolutions.in",
+    department: "Marketing",
+  },
+
+  5: {
+    firstName: "Vikram",
+    lastName: "Patel",
+    email: "vikram.patel@techsolutions.in",
+    department: "Operations",
+  },
+
+  6: {
+    firstName: "Neha",
+    lastName: "Gupta",
+    email: "neha.gupta@techsolutions.in",
+    department: "Sales",
+  },
+
+  7: {
+    firstName: "Karthik",
+    lastName: "Rao",
+    email: "karthik.rao@techsolutions.in",
+    department: "Engineering",
+  },
+
+  8: {
+    firstName: "Ananya",
+    lastName: "Nair",
+    email: "ananya.nair@techsolutions.in",
+    department: "Product",
+  },
+
+  9: {
+    firstName: "Rohit",
+    lastName: "Mehta",
+    email: "rohit.mehta@techsolutions.in",
+    department: "Customer Support",
+  },
+
+  10: {
+    firstName: "Kavya",
+    lastName: "Singh",
+    email: "kavya.singh@techsolutions.in",
+    department: "Information Technology",
+  },
+};
+
+/*
+|--------------------------------------------------------------------------
+| Maps JSONPlaceholder User
+|--------------------------------------------------------------------------
+*/
+
+export const mapApiUserToUser = (
+  user
+) => {
+  const employee =
+    INDIAN_EMPLOYEES[user.id];
+
+  if (employee) {
+    return {
+      id: Number(user.id),
+      firstName:
+        employee.firstName,
+      lastName:
+        employee.lastName,
+      email: employee.email,
+      department:
+        employee.department,
+    };
+  }
+
   const {
     firstName,
     lastName,
@@ -54,7 +156,10 @@ export const mapApiUserToUser = (user) => {
     firstName,
     lastName,
     email: user.email || "",
-    department: generateDepartment(user.company),
+    department:
+      generateDepartment(
+        user.company
+      ),
   };
 };
 
@@ -63,7 +168,6 @@ export const mapApiUserToUser = (user) => {
 | Search
 |--------------------------------------------------------------------------
 */
-
 export const searchUsers = (
   users,
   searchText = ""
@@ -115,17 +219,23 @@ export const filterUsers = (
       user.firstName
         .toLowerCase()
         .includes(
-          firstName.trim().toLowerCase()
+          firstName
+            .trim()
+            .toLowerCase()
         ) &&
       user.lastName
         .toLowerCase()
         .includes(
-          lastName.trim().toLowerCase()
+          lastName
+            .trim()
+            .toLowerCase()
         ) &&
       user.email
         .toLowerCase()
         .includes(
-          email.trim().toLowerCase()
+          email
+            .trim()
+            .toLowerCase()
         ) &&
       user.department
         .toLowerCase()
@@ -155,37 +265,40 @@ export const sortUsers = (
 
   const sortedUsers = [...users];
 
-  sortedUsers.sort((first, second) => {
-    if (field === "id") {
-      return direction ===
-        SORT_DIRECTIONS.ASC
-        ? first.id - second.id
-        : second.id - first.id;
-    }
+  sortedUsers.sort(
+    (first, second) => {
+      if (field === "id") {
+        return direction ===
+          SORT_DIRECTIONS.ASC
+          ? first.id - second.id
+          : second.id - first.id;
+      }
 
-    const firstValue = String(
-      first[field] ?? ""
-    );
-
-    const secondValue = String(
-      second[field] ?? ""
-    );
-
-    const comparison =
-      firstValue.localeCompare(
-        secondValue,
-        undefined,
-        {
-          sensitivity: "base",
-          numeric: true,
-        }
+      const firstValue = String(
+        first[field] ?? ""
       );
 
-    return direction ===
-      SORT_DIRECTIONS.ASC
-      ? comparison
-      : -comparison;
-  });
+      const secondValue = String(
+        second[field] ?? ""
+      );
+
+      const comparison =
+        firstValue.localeCompare(
+          secondValue,
+          undefined,
+          {
+            sensitivity:
+              "base",
+            numeric: true,
+          }
+        );
+
+      return direction ===
+        SORT_DIRECTIONS.ASC
+        ? comparison
+        : -comparison;
+    }
+  );
 
   return sortedUsers;
 };
@@ -202,7 +315,8 @@ export const paginateUsers = (
   pageSize
 ) => {
   const startIndex =
-    (currentPage - 1) * pageSize;
+    (currentPage - 1) *
+    pageSize;
 
   return users.slice(
     startIndex,
@@ -220,7 +334,9 @@ export const calculateTotalPages = (
 
   return Math.max(
     1,
-    Math.ceil(totalRecords / pageSize)
+    Math.ceil(
+      totalRecords / pageSize
+    )
   );
 };
 
@@ -237,7 +353,10 @@ export const processUsers = ({
   sortConfig,
 }) => {
   const searchedUsers =
-    searchUsers(users, searchText);
+    searchUsers(
+      users,
+      searchText
+    );
 
   const filteredUsers =
     filterUsers(
